@@ -6,7 +6,7 @@ services:
     ports:
       - '8000:80'
     environment:
-      RAILS_ENV: prod
+      RAILS_ENV: production
       DATABASE_URL: ${MYSQL_URL}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
     volumes:
