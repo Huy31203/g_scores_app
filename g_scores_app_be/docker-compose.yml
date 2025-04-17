@@ -11,6 +11,8 @@ services:
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
     volumes:
       - .:/rails
+    links:
+      - db
     depends_on:
       - db
 
