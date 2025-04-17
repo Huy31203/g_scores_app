@@ -4,16 +4,9 @@ import { IReport } from '@/types/report';
 import logError from '@/utils';
 import { useEffect, useState } from 'react';
 import { ScoreDistributionChart } from '../ScoreDistributionChart';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select';
 
 const subjectLabels: Record<keyof IReport, string> = {
-  math: 'Mathematics',
+  math: 'Math',
   literature: 'Literature',
   foreign_language: 'Foreign Language',
   physics: 'Physics',
@@ -68,28 +61,13 @@ export function ScoreReports() {
     );
   }
 
-  const subjects = Object.keys(report) as Array<keyof IReport>;
+  const subjectScores = Object.entries(report).map(([key, scoreRange]) => ({
+    subject: subjectLabels[key as keyof IReport],
+    scoreRange: scoreRange,
+  }));
 
   return (
     <div className="space-y-6">
-      <div className="w-full max-w-xs">
-        <Select
-          value={selectedSubject ?? undefined}
-          onValueChange={(value) => setSelectedSubject(value as keyof IReport)}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a subject" />
-          </SelectTrigger>
-          <SelectContent>
-            {subjects.map((subject) => (
-              <SelectItem key={subject} value={subject}>
-                {subjectLabels[subject]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       {selectedSubject && (
         <Card>
           <CardHeader>
@@ -98,10 +76,7 @@ export function ScoreReports() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ScoreDistributionChart
-              scoreRange={report[selectedSubject]}
-              subject={subjectLabels[selectedSubject]}
-            />
+            <ScoreDistributionChart subjectScores={subjectScores} />
           </CardContent>
         </Card>
       )}

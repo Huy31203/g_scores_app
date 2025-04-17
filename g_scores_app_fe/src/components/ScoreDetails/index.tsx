@@ -31,17 +31,22 @@ export function ScoreDetails({ student }: ScoreDetailsProps) {
   };
 
   // Get all subject scores from the student object
-  const subjectScores = [
-    { subject: 'Math', score: student.math },
-    { subject: 'Literature', score: student.literature },
-    { subject: 'Foreign Language', score: student.foreign_language },
-    { subject: 'Physics', score: student.physics },
-    { subject: 'Chemistry', score: student.chemistry },
-    { subject: 'Biology', score: student.biology },
-    { subject: 'History', score: student.history },
-    { subject: 'Geography', score: student.geography },
-    { subject: 'Civic Education', score: student.civic_education },
+  const subjectMapping = [
+    { display: 'Math', key: 'math' },
+    { display: 'Literature', key: 'literature' },
+    { display: 'Foreign Language', key: 'foreign_language' },
+    { display: 'Physics', key: 'physics' },
+    { display: 'Chemistry', key: 'chemistry' },
+    { display: 'Biology', key: 'biology' },
+    { display: 'History', key: 'history' },
+    { display: 'Geography', key: 'geography' },
+    { display: 'Civic Education', key: 'civic_education' },
   ];
+
+  const subjectScores = subjectMapping.map(({ display, key }) => ({
+    subject: display,
+    score: student.subjects.find((s) => s.name === key)?.score ?? 0,
+  }));
 
   return (
     <div className="space-y-6">
@@ -74,12 +79,10 @@ export function ScoreDetails({ student }: ScoreDetailsProps) {
                   <TableRow key={subject}>
                     <TableCell className="font-medium">{subject}</TableCell>
                     <TableCell>
-                      {score ? score.toFixed(2) : 'Not participated'}
+                      {score > 0 ? score.toFixed(2) : 'Not participated'}
                     </TableCell>
                     <TableCell>
-                      {score !== null && (
-                        <Badge className={color}>{label}</Badge>
-                      )}
+                      {score > 0 && <Badge className={color}>{label}</Badge>}
                     </TableCell>
                   </TableRow>
                 );

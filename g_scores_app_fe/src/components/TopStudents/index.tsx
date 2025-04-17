@@ -86,18 +86,27 @@ export function TopStudents() {
                 {student.registration_number}
               </TableCell>
               <TableCell className="text-right">
-                {student.math.toFixed(2)}
+                {student.subjects
+                  .find((s) => s.name === 'math')
+                  ?.score.toFixed(2)}
               </TableCell>
               <TableCell className="text-right">
-                {student.physics.toFixed(2)}
+                {student.subjects
+                  .find((s) => s.name === 'physics')
+                  ?.score.toFixed(2)}
               </TableCell>
               <TableCell className="text-right">
-                {student.chemistry.toFixed(2)}
+                {student.subjects
+                  .find((s) => s.name === 'chemistry')
+                  ?.score.toFixed(2)}
               </TableCell>
               <TableCell className="text-right font-medium">
-                {(student.math + student.physics + student.chemistry).toFixed(
-                  2
-                )}
+                {student.subjects
+                  .filter((s) =>
+                    ['math', 'physics', 'chemistry'].includes(s.name)
+                  )
+                  .reduce((total, subject) => total + subject.score, 0)
+                  .toFixed(2)}
               </TableCell>
             </TableRow>
           ))}

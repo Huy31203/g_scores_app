@@ -1,17 +1,17 @@
 class ReportGenerator
-  def initialize(subject)
-    @subject = subject
+  def initialize(subject_name)
+    @subject_name = subject_name
   end
 
   def levels
     sql = <<-SQL
       SELECT
-        SUM(CASE WHEN #{@subject} >= 8 THEN 1 ELSE 0 END) AS level_1,
-        SUM(CASE WHEN #{@subject} >= 6 AND #{@subject} < 8 THEN 1 ELSE 0 END) AS level_2,
-        SUM(CASE WHEN #{@subject} >= 4 AND #{@subject} < 6 THEN 1 ELSE 0 END) AS level_3,
-        SUM(CASE WHEN #{@subject} < 4 THEN 1 ELSE 0 END) AS level_4
-      FROM students
-      WHERE #{@subject} IS NOT NULL
+        SUM(CASE WHEN score >= 8 THEN 1 ELSE 0 END) AS level_1,
+        SUM(CASE WHEN score >= 6 AND score < 8 THEN 1 ELSE 0 END) AS level_2,
+        SUM(CASE WHEN score >= 4 AND score < 6 THEN 1 ELSE 0 END) AS level_3,
+        SUM(CASE WHEN score < 4 THEN 1 ELSE 0 END) AS level_4
+      FROM subjects
+      WHERE name = '#{@subject_name}'
     SQL
 
     result = ActiveRecord::Base.connection.select_one(sql)

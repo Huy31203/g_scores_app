@@ -1,4 +1,6 @@
+export * from './report';
 export * from './student';
+export * from './subject';
 
 export interface ApiResponse<T> {
   status: number;

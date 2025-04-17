@@ -1,31 +1,63 @@
 require 'csv'
 
-INSERT_BATCH=10_000
+INSERT_BATCH = 100_000
+SUBJECT_NAME_MAPPING = {
+  'toan' => 'math',
+  'ngu_van' => 'literature',
+  'ngoai_ngu' => 'foreign_language',
+  'vat_li' => 'physics',
+  'hoa_hoc' => 'chemistry',
+  'sinh_hoc' => 'biology',
+  'lich_su' => 'history',
+  'dia_li' => 'geography',
+  'gdcd' => 'civic_education'
+}
 
 csv_path = Rails.root.join('dataset', 'diem_thi_thpt_2024.csv')
 students = []
+subjects = []
 
-CSV.foreach(csv_path, headers: true, encoding: 'UTF-8') do |row|
-  students << Student.new(
+CSV.foreach(csv_path, headers: true, encoding: 'UTF-8').with_index do |row, index|
+  students << {
     registration_number: row['sbd'],
-    math: row['toan']&.gsub(',', '.')&.to_f,
-    literature: row['ngu_van']&.gsub(',', '.')&.to_f,
-    foreign_language: row['ngoai_ngu']&.gsub(',', '.')&.to_f,
-    physics: row['vat_li']&.gsub(',', '.')&.to_f,
-    chemistry: row['hoa_hoc']&.gsub(',', '.')&.to_f,
-    biology: row['sinh_hoc']&.gsub(',', '.')&.to_f,
-    history: row['lich_su']&.gsub(',', '.')&.to_f,
-    geography: row['dia_li']&.gsub(',', '.')&.to_f,
-    civic_education: row['gdcd']&.gsub(',', '.')&.to_f
-  )
+    created_at: Time.now,
+    updated_at: Time.now
+  }
 
-  if students.size >= INSERT_BATCH
-    Student.import students
-    students = [] # reset
+  SUBJECT_NAME_MAPPING.each do |vietnamese_name, english_name|
+    score = row[vietnamese_name]&.gsub(',', '.')&.to_f
+    if score
+      subjects << {
+        name: english_name,
+        score: score,
+        registration_number: row['sbd'],
+        created_at: Time.now,
+        updated_at: Time.now
+      }
+    end
+  end
+
+  if (index + 1) % INSERT_BATCH == 0
+    Student.insert_all(students)
+    student_id_map = Student.where(registration_number: students.map { |s| s[:registration_number] }).pluck(:registration_number, :id).to_h
+
+    subjects.each { |subject| subject[:student_id] = student_id_map[subject.delete(:registration_number)] }
+    Subject.insert_all(subjects)
+
+    Rails.logger.info "Inserted #{students.size} student and #{subjects.size} subject records."
+
+    students.clear
+    subjects.clear
   end
 end
 
 # Insert remaining rows
-Student.import students if students.any?
+if students.any?
+  Student.insert_all(students)
+  student_id_map = Student.where(registration_number: students.map { |s| s[:registration_number] }).pluck(:registration_number, :id).to_h
 
-puts "✅ Seeded student data successfully!"
+  subjects.each { |subject| subject[:student_id] = student_id_map[subject.delete(:registration_number)] }
+  Subject.insert_all(subjects)
+end
+
+Rails.logger.info "✅ Seeded student data successfully!"

@@ -1,10 +1,10 @@
 class Api::V1::ReportsController < ApplicationController
   # GET /api/v1/reports/scores
   def scores
-    report = {}
-
-    Student::SUBJECTS.each do |subject|
-      report[subject.to_s] = ReportGenerator.new(subject).levels
+    report = Rails.cache.fetch("score_reports", expires_in: 1.hours) do
+      Subject.distinct.pluck(:name).each_with_object({}) do |subject_name, result|
+        result[subject_name] = ReportGenerator.new(subject_name).levels
+      end
     end
 
     render_success(report, "Score distribution report")
