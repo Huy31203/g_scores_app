@@ -1,5 +1,18 @@
 # g_scores_app
 
+## Previews
+1. Dashboard page:
+   
+![image](https://github.com/user-attachments/assets/21549228-8a97-4c3b-a143-1e89685bf111)
+
+2. Search Student Scores page:
+   
+![image](https://github.com/user-attachments/assets/f4c7343e-ad24-4f3b-90f8-f7476499b82d)
+
+3. Scores Reports page:
+   
+![image](https://github.com/user-attachments/assets/2ef4714d-ce4c-4d9c-a988-286fb20c2bcf)
+
 ## Backend (BE) Setup with Docker
 
 ### Prerequisites
