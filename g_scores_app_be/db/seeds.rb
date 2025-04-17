@@ -1,6 +1,6 @@
 require 'csv'
 
-INSERT_BATCH = 100_000
+INSERT_BATCH = 1_000
 SUBJECT_NAME_MAPPING = {
   'toan' => 'math',
   'ngu_van' => 'literature',
@@ -44,7 +44,7 @@ CSV.foreach(csv_path, headers: true, encoding: 'UTF-8').with_index do |row, inde
     subjects.each { |subject| subject[:student_id] = student_id_map[subject.delete(:registration_number)] }
     Subject.insert_all(subjects)
 
-    Rails.logger.info "Inserted #{students.size} student and #{subjects.size} subject records."
+    puts "Inserted #{students.size} student and #{subjects.size} subject records."
 
     students.clear
     subjects.clear
