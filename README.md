@@ -16,6 +16,34 @@
    ```
 3. The backend should now be running. By default, it will be accessible at `http://localhost:8000`.
 
+### Steps to seed data
+
+1. Navigate to the backend directory:
+   ```bash
+   cd g_scores_app_be
+   ```
+2. Start only the database service using Docker Compose:
+   ```bash
+   docker-compose up db
+   ```
+3. Open a new terminal and navigate to the backend directory:
+   ```bash
+   cd g_scores_app_be
+   ```
+4. Run the following commands to set up the database:
+   - Create the database:
+     ```bash
+     docker-compose run app rails db:create
+     ```
+   - Run migrations:
+     ```bash
+     docker-compose run app rails db:migrate
+     ```
+   - Seed the database:
+     ```bash
+     docker-compose run app rails db:seed
+     ```
+
 ### Additional Commands
 - To stop the containers:
   ```bash
