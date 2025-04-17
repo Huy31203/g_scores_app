@@ -7,7 +7,7 @@ services:
       - '8000:80'
     environment:
       RAILS_ENV: prod
-      DATABASE_URL: mysql2://root:${MYSQL_ROOT_PASSWORD}@db:${MYSQL_PORT}/${MYSQL_DATABASE}
+      DATABASE_URL: ${MYSQL_URL}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
     volumes:
       - .:/rails
